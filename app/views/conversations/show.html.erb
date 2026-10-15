@@ -1,0 +1,9 @@
+<div class="chat-header"><span class="avatar"><%= @conversation.other_participant(current_user).display_name.first.upcase %></span><div><p class="eyebrow">Private conversation</p><h1><%= link_to @conversation.other_participant(current_user).display_name, user_path(@conversation.other_participant(current_user)) %></h1></div><%= link_to "All messages", conversations_path, class: "text-link" %></div>
+<section id="messages" class="message-thread">
+  <% if @messages.any? %>
+    <% @messages.each do |message| %>
+      <article class="message-bubble <%= message.user == current_user ? "message-mine" : "" %>"><p class="message-author"><%= message.user.display_name %> · <%= l(message.created_at, format: :short) %></p><%= simple_format(message.body) %></article>
+    <% end %>
+  <% else %><div class="empty-state"><p>No messages yet. Say hello!</p></div><% end %>
+</section>
+<%= form_with model: [@conversation, @message], class: "message-form" do |form| %><%= form.text_area :body, rows: 3, maxlength: 5000, required: true, placeholder: "Write a message…", aria: { label: "Message" } %><%= form.submit "Send", class: "button" %><% end %>

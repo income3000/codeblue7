@@ -1,0 +1,26 @@
+<article class="report-detail">
+  <p class="eyebrow"><%= @incident.location.presence || "Community report" %><% if @incident.occurred_at %> · Happened <%= l(@incident.occurred_at, format: :long) %><% end %></p>
+  <h1><%= @incident.title %></h1>
+  <p class="report-byline">Posted by <%= link_to @incident.user.display_name, user_path(@incident.user) %> · <%= l(@incident.created_at, format: :long) %></p>
+  <% if @incident.picture.attached? %><%= image_tag @incident.picture, class: "report-picture", alt: "Photo for #{@incident.title}" %><% end %>
+  <div class="report-description"><%= simple_format(@incident.description) %></div>
+  <% if @incident.user == current_user || current_user.admin? %>
+    <div class="inline-actions"><%= link_to "Edit", edit_incident_path(@incident), class: "text-link" %><%= button_to "Delete report", @incident, method: :delete, class: "text-button", form: { data: { turbo_confirm: "Delete this incident and its comments?" } } %></div>
+  <% end %>
+</article>
+<section id="comments" class="comments-section">
+  <div class="section-heading"><div><p class="eyebrow">Neighbor discussion</p><h2>Comments (<%= @comments.size %>)</h2></div></div>
+  <%= form_with model: [@incident, @comment], class: "comment-form" do |form| %>
+    <%= form.label :body, "Add a helpful update" %>
+    <%= form.text_area :body, rows: 3, maxlength: 2000, required: true, placeholder: "Keep it relevant and respectful." %>
+    <%= form.submit "Post comment", class: "button" %>
+  <% end %>
+  <div class="comment-list">
+    <% @comments.each do |comment| %>
+      <article class="comment-card"><div class="card-meta"><strong><%= link_to comment.user.display_name, user_path(comment.user) %></strong><span><%= time_ago_in_words(comment.created_at) %> ago</span></div><%= simple_format(comment.body) %>
+        <% if comment.user == current_user || current_user.admin? %><%= button_to "Remove", incident_comment_path(@incident, comment), method: :delete, class: "text-button", form: { data: { turbo_confirm: "Remove this comment?" } } %><% end %>
+      </article>
+    <% end %>
+    <% if @comments.empty? %><p class="muted">No comments yet. Add a useful update to get the conversation started.</p><% end %>
+  </div>
+</section>

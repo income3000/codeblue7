@@ -1,0 +1,8 @@
+<p class="eyebrow">Administration</p><h1>Community accounts</h1><p class="page-intro">Manage who has administrator privileges. Members cannot grant themselves access.</p>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Member</th><th>Email</th><th>Role</th><th>Update access</th></tr></thead><tbody>
+  <% @users.each do |user| %><tr><td><%= link_to user.display_name, user_path(user) %></td><td><%= user.email %></td><td><span class="role-pill"><%= user.role %></span></td><td>
+    <% if user == current_user %><span class="muted">Your account</span><% else %>
+      <%= form_with model: [ :admin, user ], class: "role-form" do |form| %><%= form.select :role, User.roles.keys %><%= form.submit "Save", class: "button button-small" %><% end %>
+    <% end %>
+  </td></tr><% end %>
+</tbody></table></div>

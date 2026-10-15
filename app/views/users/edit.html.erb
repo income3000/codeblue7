@@ -1,0 +1,7 @@
+<p class="eyebrow">Your account</p><h1>Edit profile</h1>
+<%= form_with model: @user, class: "form-card" do |form| %>
+  <% if @user.errors.any? %><div class="form-errors"><ul><% @user.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div><% end %>
+  <div class="field"><%= form.label :display_name %><%= form.text_field :display_name, required: true, maxlength: 80 %></div>
+  <div class="field"><%= form.label :bio, "About you" %><%= form.text_area :bio, rows: 5, maxlength: 1000 %></div>
+  <div class="form-actions"><%= form.submit "Save profile", class: "button" %><%= link_to "Cancel", user_path(@user), class: "text-link" %></div>
+<% end %>

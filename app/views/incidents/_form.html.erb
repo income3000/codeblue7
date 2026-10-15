@@ -1,0 +1,11 @@
+<%= form_with model: incident, class: "form-card" do |form| %>
+  <% if incident.errors.any? %><div class="form-errors"><h2><%= pluralize(incident.errors.count, "error") %> prevented this report from being saved</h2><ul><% incident.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div><% end %>
+  <div class="field"><%= form.label :title %><%= form.text_field :title, required: true, maxlength: 160, placeholder: "A short summary" %></div>
+  <div class="field"><%= form.label :description %><%= form.text_area :description, required: true, rows: 7, placeholder: "What happened? Share clear, factual details." %></div>
+  <div class="form-row">
+    <div class="field"><%= form.label :location %><%= form.text_field :location, placeholder: "Area or cross streets" %></div>
+    <div class="field"><%= form.label :occurred_at, "When did it happen?" %><%= form.datetime_local_field :occurred_at %></div>
+  </div>
+  <div class="field"><%= form.label :picture, "Photo (optional, image under 10 MB)" %><%= form.file_field :picture, accept: "image/*" %></div>
+  <div class="form-actions"><%= form.submit class: "button" %><%= link_to "Cancel", incidents_path, class: "text-link" %></div>
+<% end %>

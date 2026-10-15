@@ -1,0 +1,22 @@
+<div class="section-heading">
+  <div><p class="eyebrow">Community updates</p><h1>Incident board</h1><p>Recent reports shared by members.</p></div>
+  <%= link_to "＋ Report an incident", new_incident_path, class: "button" %>
+</div>
+<% if @incidents.any? %>
+  <div class="incident-grid">
+    <% @incidents.each do |incident| %>
+      <article class="incident-card">
+        <% if incident.picture.attached? %><%= image_tag incident.picture, class: "incident-thumb", alt: "Photo for #{incident.title}" %><% end %>
+        <div class="card-content">
+          <p class="eyebrow"><%= incident.location.presence || "Community report" %></p>
+          <h2><%= link_to incident.title, incident %></h2>
+          <p class="clamped"><%= incident.description %></p>
+          <div class="card-meta"><%= link_to incident.user.display_name, user_path(incident.user) %><span><%= time_ago_in_words(incident.created_at) %> ago</span></div>
+          <%= link_to "Read report · #{incident.comments.size} comments", incident_path(incident), class: "text-link" %>
+        </div>
+      </article>
+    <% end %>
+  </div>
+<% else %>
+  <div class="empty-state"><h2>No reports yet</h2><p>Start the board by sharing a local incident.</p><%= link_to "Post the first report", new_incident_path, class: "button" %></div>
+<% end %>

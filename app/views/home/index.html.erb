@@ -1,1 +1,17 @@
-<h1>hello world</h1>
+<section class="hero">
+	<p class="eyebrow">A safer, more connected community</p>
+	<h1>Look out for one another.</h1>
+	<p>Share local incidents, add helpful context, and connect privately with neighbors.</p>
+	<div class="hero-actions">
+		<%= link_to "Browse incident board", incidents_path, class: "button" %>
+		<% unless user_signed_in? %>
+			<%= link_to "Join the community", new_user_registration_path, class: "button button-light" %>
+			<%= link_to "Sign in", new_user_session_path, class: "text-link" %>
+		<% end %>
+	</div>
+</section>
+<section class="feature-grid">
+	<article class="feature-card"><span>01</span><h2>Share incidents</h2><p>Post what happened with a description, location, and optional photo.</p></article>
+	<article class="feature-card"><span>02</span><h2>Keep the conversation useful</h2><p>Neighbors can add context and updates in the comments.</p></article>
+	<article class="feature-card"><span>03</span><h2>Connect privately</h2><p>Start a one-to-one message thread with another community member.</p></article>
+</section>

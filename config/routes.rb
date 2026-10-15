@@ -1,4 +1,17 @@
 Rails.application.routes.draw do
+  devise_for :users, controllers: { registrations: "users/registrations" }
+
+  resources :users, only: [ :show, :edit, :update ]
+  resources :incidents do
+    resources :comments, only: [ :create, :destroy ]
+  end
+  resources :conversations, only: [ :index, :show, :create ] do
+    resources :messages, only: :create
+  end
+  namespace :admin do
+    resources :users, only: [ :index, :update ]
+  end
+
   resources :pages
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

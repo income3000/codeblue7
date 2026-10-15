@@ -1,0 +1,11 @@
+<section class="profile-card">
+  <div class="avatar"><%= @user.display_name.first.upcase %></div>
+  <div><p class="eyebrow"><%= @user.admin? ? "Community administrator" : "Community member" %></p><h1><%= @user.display_name %></h1><p class="muted">Member since <%= l(@user.created_at.to_date, format: :long) %></p></div>
+  <% if @user == current_user || current_user.admin? %><%= link_to "Edit profile", edit_user_path(@user), class: "button button-light" %><% end %>
+  <% if @user != current_user %><%= button_to "Message", conversations_path(recipient_id: @user.id), method: :post, class: "button" %><% end %>
+</section>
+<section class="profile-bio"><h2>About</h2><%= @user.bio.present? ? simple_format(@user.bio) : content_tag(:p, "This member has not added a bio yet.", class: "muted") %></section>
+<section class="profile-activity"><div class="section-heading"><h2>Recent incident reports</h2></div>
+  <% reports = @user.incidents.order(created_at: :desc).limit(5) %>
+  <% if reports.any? %><ul class="report-list"><% reports.each do |incident| %><li><%= link_to incident.title, incident %><span><%= l(incident.created_at.to_date, format: :long) %></span></li><% end %></ul><% else %><p class="muted">No public reports yet.</p><% end %>
+</section>

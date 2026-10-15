@@ -1,0 +1,14 @@
+<div class="section-heading"><div><p class="eyebrow">Private one-to-one chat</p><h1>Your messages</h1><p>Conversations are only visible to their participants.</p></div></div>
+<div class="chat-layout">
+  <section class="conversation-list"><h2>Conversations</h2>
+    <% if @conversations.any? %>
+      <% @conversations.each do |conversation| %>
+        <% other_user = conversation.other_participant(current_user) %>
+        <%= link_to conversation_path(conversation), class: "conversation-item" do %><span class="avatar avatar-small"><%= other_user.display_name.first.upcase %></span><span><strong><%= other_user.display_name %></strong><small><%= conversation.messages.last&.body || "Start the conversation" %></small></span><% end %>
+      <% end %>
+    <% else %><p class="muted">No conversations yet.</p><% end %>
+  </section>
+  <section class="new-chat"><h2>Start a conversation</h2><p class="muted">Choose a community member to message privately.</p>
+    <% if @users.any? %><%= form_with url: conversations_path, method: :post, class: "stacked-form" do |form| %><div class="field"><%= form.label :recipient_id, "Member" %><%= form.collection_select :recipient_id, @users, :id, :display_name, prompt: "Choose a member" %></div><%= form.submit "Open chat", class: "button" %><% end %><% else %><p class="muted">You are the only registered member so far.</p><% end %>
+  </section>
+</div>
