@@ -96,7 +96,17 @@ class CommunityFeaturesTest < ActionDispatch::IntegrationTest
     get root_url
 
     assert_response :success
+    assert_select "body.home-page"
     assert_select "a[href=?]", new_user_session_path, text: "Sign in"
     assert_select "a[href=?]", new_user_registration_path, text: "Join the community"
+    assert_select "a[href=?]", official_records_path, count: 0
+  end
+
+  test "signed-in members can access the officials directory" do
+    get official_records_url
+
+    assert_response :success
+    assert_select "body.app-page"
+    assert_select "input[type=search]"
   end
 end

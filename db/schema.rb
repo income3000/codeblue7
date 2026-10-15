@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_160100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_15_170000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -80,6 +80,45 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_160100) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
+  create_table "official_record_reviews", force: :cascade do |t|
+    t.integer "official_record_id", null: false
+    t.integer "user_id", null: false
+    t.integer "professionalism_rating", null: false
+    t.integer "experience_rating", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["official_record_id", "user_id"], name: "index_official_record_reviews_on_record_and_user", unique: true
+    t.index ["official_record_id"], name: "index_official_record_reviews_on_official_record_id"
+    t.index ["user_id"], name: "index_official_record_reviews_on_user_id"
+  end
+
+  create_table "official_records", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "category", null: false
+    t.string "name", null: false
+    t.string "district"
+    t.string "badge_number"
+    t.string "precinct"
+    t.string "state", null: false
+    t.string "city", null: false
+    t.text "incident_names"
+    t.string "case_number"
+    t.text "history"
+    t.text "decisions"
+    t.string "source_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_number"], name: "index_official_records_on_badge_number"
+    t.index ["case_number"], name: "index_official_records_on_case_number"
+    t.index ["category"], name: "index_official_records_on_category"
+    t.index ["city"], name: "index_official_records_on_city"
+    t.index ["district"], name: "index_official_records_on_district"
+    t.index ["precinct"], name: "index_official_records_on_precinct"
+    t.index ["state"], name: "index_official_records_on_state"
+    t.index ["user_id"], name: "index_official_records_on_user_id"
+  end
+
   create_table "pages", force: :cascade do |t|
     t.string "home"
     t.datetime "created_at", null: false
@@ -111,4 +150,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_160100) do
   add_foreign_key "incidents", "users"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"
+  add_foreign_key "official_record_reviews", "official_records"
+  add_foreign_key "official_record_reviews", "users"
+  add_foreign_key "official_records", "users"
 end

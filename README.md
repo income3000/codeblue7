@@ -1,6 +1,6 @@
 # Codeblue Community
 
-A Rails community app for member profiles, incident reports with optional photos, report comments, and private one-to-one messages.
+A Rails community app for member profiles, incident reports with optional photos, report comments, private one-to-one messages, and a searchable public-official directory with member ratings.
 
 ## Requirements and setup
 
@@ -31,6 +31,9 @@ Thereafter, admins can change other accounts' roles in the admin area. An admini
 - Authors and admins can edit or remove reports; other signed-in members can read and comment.
 - Member profiles include display names and bios. Members can edit their own profiles; admins can edit other profiles.
 - Private chats are one-to-one, and only the two participants can read or send messages.
+- Signed-in members can add and search directory entries for police officers, district attorneys, and judges. Filter and sort entries by role-specific fields such as district, badge number, precinct, case number, history, decisions, city, and state.
+- Signed-in members can submit one rating per directory entry for professionalism and overall experience (both from 1–10), update or remove their rating, and see community averages. Entries and ratings are community-submitted; check primary sources and do not treat them as verified findings.
+- `bin/rails db:seed` adds 5 explicitly fictional sample records for each official category, all listed in New York City. These demo entries are for development/testing and do not represent real people or events.
 - Uploaded images use Rails Active Storage's local disk service by default. Configure a durable object-storage service before deploying to production.
 
 ## Tests

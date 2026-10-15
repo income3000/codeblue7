@@ -1,0 +1,33 @@
+<article class="report-detail directory-detail">
+  <p class="eyebrow">Official directory · <%= @official_record.category.humanize %></p>
+  <h1><%= @official_record.name %></h1>
+  <p class="report-byline"><%= [@official_record.city, @official_record.state].compact_blank.join(", ") %></p>
+  <% if @official_record.police_officer? %>
+    <dl class="official-facts"><dt>District</dt><dd><%= @official_record.district.presence || "Not provided" %></dd><dt>Badge number</dt><dd><%= @official_record.badge_number.presence || "Not provided" %></dd><dt>Precinct</dt><dd><%= @official_record.precinct.presence || "Not provided" %></dd></dl>
+    <section class="official-section"><h2>Incidents named in</h2><%= @official_record.incident_names.present? ? simple_format(@official_record.incident_names) : content_tag(:p, "No incidents listed.", class: "muted") %></section>
+  <% else %>
+    <dl class="official-facts"><dt>Case number</dt><dd><%= @official_record.case_number.presence || "Not provided" %></dd></dl>
+    <section class="official-section"><h2>Case history</h2><%= @official_record.history.present? ? simple_format(@official_record.history) : content_tag(:p, "No history listed.", class: "muted") %></section>
+    <section class="official-section"><h2>Decisions</h2><%= @official_record.decisions.present? ? simple_format(@official_record.decisions) : content_tag(:p, "No decisions listed.", class: "muted") %></section>
+  <% end %>
+  <% if @official_record.source_url.present? %><p class="source-link"><strong>Source URL (copy and verify):</strong> <%= @official_record.source_url %></p><% end %>
+  <p class="directory-notice"><strong>Community submitted.</strong> Verify all details with linked primary sources or official records. An entry is not a finding of wrongdoing.</p>
+  <p class="report-byline">Added by <%= link_to @official_record.user.display_name, user_path(@official_record.user) %></p>
+  <section class="official-section" id="ratings">
+    <p class="eyebrow">Community ratings</p><h2>Ratings (1–10)</h2>
+    <dl class="official-facts"><dt>Professionalism</dt><dd><%= @average_professionalism_rating ? "#{format("%.1f", @average_professionalism_rating)} / 10" : "Not rated yet" %></dd><dt>Overall experience</dt><dd><%= @average_experience_rating ? "#{format("%.1f", @average_experience_rating)} / 10" : "Not rated yet" %></dd><dt>Number of ratings</dt><dd><%= @reviews.size %></dd></dl>
+    <%= form_with model: @review, scope: :official_record_review,
+      url: @review.persisted? ? official_record_review_path(@official_record, @review) : official_record_reviews_path(@official_record),
+      method: @review.persisted? ? :patch : :post, class: "rating-form" do |form| %>
+      <h3><%= @review.persisted? ? "Update your rating" : "Add your rating" %></h3>
+      <div class="form-row"><div class="field"><%= form.label :professionalism_rating, "Professionalism (1–10)" %><%= form.select :professionalism_rating, (1..10).to_a, { include_blank: "Choose a rating" }, required: true %></div><div class="field"><%= form.label :experience_rating, "Overall experience (1–10)" %><%= form.select :experience_rating, (1..10).to_a, { include_blank: "Choose a rating" }, required: true %></div></div>
+      <div class="field"><%= form.label :comment, "Optional context" %><%= form.text_area :comment, rows: 3, maxlength: 2000, placeholder: "Share a factual, respectful explanation for your ratings." %></div>
+      <%= form.submit @review.persisted? ? "Update rating" : "Submit rating", class: "button" %>
+    <% end %>
+    <div class="review-list"><% @reviews.each do |review| %><article class="comment-card"><div class="card-meta"><strong><%= link_to review.user.display_name, user_path(review.user) %></strong><span><%= l(review.created_at, format: :short) %></span></div><p>Professionalism: <strong><%= review.professionalism_rating %>/10</strong> · Overall experience: <strong><%= review.experience_rating %>/10</strong></p><%= simple_format(review.comment) if review.comment.present? %>
+      <% if review.user == current_user || current_user.admin? %><%= button_to "Delete my rating", official_record_review_path(@official_record, review), method: :delete, class: "text-button", form: { data: { turbo_confirm: "Remove this rating?" } } %><% end %>
+    </article><% end %></div>
+  </section>
+  <% if @official_record.user == current_user || current_user.admin? %><div class="inline-actions"><%= link_to "Edit entry", edit_official_record_path(@official_record), class: "text-link" %><%= button_to "Delete entry", @official_record, method: :delete, class: "text-button", form: { data: { turbo_confirm: "Remove this directory entry?" } } %></div><% end %>
+</article>
+<%= link_to "← Back to directory", official_records_path, class: "text-link" %>

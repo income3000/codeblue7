@@ -4,6 +4,8 @@ class User < ApplicationRecord
   enum :role, { member: "member", admin: "admin" }, default: :member
 
   has_many :incidents, dependent: :destroy
+  has_many :official_records, dependent: :restrict_with_error
+  has_many :official_record_reviews, class_name: "OfficialRecordReview", dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :started_conversations, class_name: "Conversation", foreign_key: :user_one_id, dependent: :destroy, inverse_of: :user_one

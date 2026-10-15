@@ -22,12 +22,13 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
   </head>
 
-  <body>
+  <body class="<%= controller_name == "home" && action_name == "index" ? "home-page" : "app-page" %>">
     <header class="site-header">
       <%= link_to "Codeblue Community", root_path, class: "brand" %>
       <nav aria-label="Main navigation">
         <%= link_to "Incident board", incidents_path %>
         <% if user_signed_in? %>
+          <%= link_to "Officials directory", official_records_path %>
           <%= link_to "Messages", conversations_path %>
           <%= link_to "My profile", user_path(current_user) %>
           <%= link_to "Admin", admin_users_path if current_user.admin? %>

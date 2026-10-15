@@ -1,0 +1,37 @@
+<div class="section-heading">
+  <div><p class="eyebrow">Community-submitted public records</p><h1>Officials directory</h1><p>Search police officers, district attorneys, and judges.</p></div>
+  <%= link_to "＋ Add an entry", new_official_record_path, class: "button" %>
+</div>
+<div class="directory-notice"><strong>Use responsibly.</strong> Entries are community-submitted and are not verified endorsements or findings. Check linked primary sources and official records before relying on them.</div>
+<%= form_with url: official_records_path, method: :get, class: "directory-search" do |form| %>
+  <div class="field search-query"><%= form.label :q, "Search directory" %><%= form.search_field :q, value: params[:q], placeholder: "Name, district, badge, case number, city…" %></div>
+  <div class="field"><%= form.label :category, "Profession" %><%= form.select :category, @categories.map { |key, _| [ key.humanize, key ] }, { include_blank: "All officials", selected: params[:category] } %></div>
+  <div class="field"><%= form.label :sort, "Sort by" %><%= form.select :sort, @sort_options.map { |value, label| [label, value] }, selected: params[:sort].presence || "created_at" %></div>
+  <div class="field"><%= form.label :direction, "Order" %><%= form.select :direction, [["Descending", "desc"], ["Ascending", "asc"]], selected: params[:direction].presence || "desc" %></div>
+  <div class="search-actions"><%= form.submit "Search", class: "button" %><%= link_to "Clear", official_records_path, class: "text-link" %></div>
+<% end %>
+<% if @records.any? %>
+  <div class="admin-table-wrap directory-table-wrap"><table class="admin-table directory-table"><thead><tr>
+    <th>Name / profession</th><th>City, state</th>
+    <% if params[:category] == "police_officer" %><th>District</th><th>Badge</th><th>Precinct</th><th>Incidents named in</th>
+    <% elsif %w[district_attorney judge].include?(params[:category]) %><th>Case number</th><th>History</th><th>Decisions</th>
+    <% else %><th>District / precinct</th><th>Badge / case</th><th>Incidents / history</th><th>Decisions</th><% end %>
+    <th>Rating (professionalism / experience)</th><th>Entry</th>
+  </tr></thead><tbody>
+    <% @records.each do |record| %><tr>
+      <td><%= link_to record.name, official_record_path(record) %><br><span class="role-pill"><%= record.category.humanize %></span></td>
+      <td><%= [record.city, record.state].compact_blank.join(", ") %></td>
+      <% if params[:category] == "police_officer" %>
+        <td><%= record.district.presence || "—" %></td><td><%= record.badge_number.presence || "—" %></td><td><%= record.precinct.presence || "—" %></td><td><%= truncate(record.incident_names.presence || "—", length: 100) %></td>
+      <% elsif %w[district_attorney judge].include?(params[:category]) %>
+        <td><%= record.case_number.presence || "—" %></td><td><%= truncate(record.history.presence || "—", length: 100) %></td><td><%= truncate(record.decisions.presence || "—", length: 100) %></td>
+      <% else %>
+        <td><%= [record.district, record.precinct].compact_blank.join(" / ").presence || "—" %></td><td><%= [record.badge_number, record.case_number].compact_blank.join(" / ").presence || "—" %></td><td><%= truncate([record.incident_names, record.history].compact_blank.join(" · ").presence || "—", length: 100) %></td><td><%= truncate(record.decisions.presence || "—", length: 100) %></td>
+      <% end %>
+      <% ratings = @rating_summaries[record.id] %><td><% if ratings %><%= format("%.1f", ratings[1]) %> / <%= format("%.1f", ratings[2]) %> <small>(<%= ratings[3] %>)</small><% else %><span class="muted">Not rated</span><% end %></td>
+      <td><%= link_to "View", official_record_path(record) %><br><small>Added by <%= record.user.display_name %></small></td>
+    </tr><% end %>
+  </tbody></table></div>
+<% else %>
+  <div class="empty-state"><h2>No matching directory entries</h2><p>Try another search or add a sourced entry.</p><%= link_to "Add an entry", new_official_record_path, class: "button" %></div>
+<% end %>

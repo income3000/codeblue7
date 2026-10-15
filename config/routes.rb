@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: "users/registrations" }
 
   resources :users, only: [ :show, :edit, :update ]
+  resources :official_records do
+    resources :reviews, controller: "official_record_reviews", only: [ :create, :update, :destroy ]
+  end
   resources :incidents do
     resources :comments, only: [ :create, :destroy ]
   end

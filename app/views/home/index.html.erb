@@ -7,6 +7,8 @@
 		<% unless user_signed_in? %>
 			<%= link_to "Join the community", new_user_registration_path, class: "button button-light" %>
 			<%= link_to "Sign in", new_user_session_path, class: "text-link" %>
+		<% else %>
+			<%= link_to "Search officials", official_records_path, class: "button button-light" %>
 		<% end %>
 	</div>
 </section>

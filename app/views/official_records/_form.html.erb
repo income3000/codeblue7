@@ -1,0 +1,20 @@
+<%= form_with model: official_record, class: "form-card" do |form| %>
+  <% if official_record.errors.any? %><div class="form-errors"><h2><%= pluralize(official_record.errors.count, "error") %> prevented this entry from being saved</h2><ul><% official_record.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div><% end %>
+  <div class="field"><%= form.label :category, "Profession" %><%= form.select :category, OfficialRecord.categories.keys.map { |category| [category.humanize, category] }, { prompt: "Select a profession" }, required: true %></div>
+  <div class="field"><%= form.label :name, "Full name" %><%= form.text_field :name, required: true, maxlength: 160, autocomplete: "name" %></div>
+  <div class="form-row">
+    <div class="field"><%= form.label :city %><%= form.text_field :city, required: true, maxlength: 100 %></div>
+    <div class="field"><%= form.label :state %><%= form.text_field :state, required: true, maxlength: 100 %></div>
+  </div>
+  <fieldset class="directory-fields"><legend>Police officer details</legend>
+    <div class="form-row"><div class="field"><%= form.label :district %><%= form.text_field :district, maxlength: 100 %></div><div class="field"><%= form.label :badge_number %><%= form.text_field :badge_number, maxlength: 100 %></div><div class="field"><%= form.label :precinct %><%= form.text_field :precinct, maxlength: 100 %></div></div>
+    <div class="field"><%= form.label :incident_names, "Incidents named in" %><%= form.text_area :incident_names, rows: 4, placeholder: "Include factual context and link to a source below." %></div>
+  </fieldset>
+  <fieldset class="directory-fields"><legend>District attorney and judge details</legend>
+    <div class="field"><%= form.label :case_number %><%= form.text_field :case_number, maxlength: 100 %></div>
+    <div class="field"><%= form.label :history, "Case history" %><%= form.text_area :history, rows: 4 %></div>
+    <div class="field"><%= form.label :decisions, "Decisions" %><%= form.text_area :decisions, rows: 4 %></div>
+  </fieldset>
+  <div class="field"><%= form.label :source_url, "Source link (recommended)" %><%= form.url_field :source_url, maxlength: 2048, placeholder: "https://…" %><small>Link to an official or primary source when possible.</small></div>
+  <div class="form-actions"><%= form.submit class: "button" %><%= link_to "Cancel", official_records_path, class: "text-link" %></div>
+<% end %>
