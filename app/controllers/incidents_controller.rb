@@ -11,7 +11,8 @@ class IncidentsController < ApplicationController
     sort_order = params.fetch(:sort, "recent").to_s
     case sort_order
     when "official"
-      @incidents = @incidents.left_joins(:official_record).reorder("official_records.name ASC, incidents.created_at DESC")
+      @incidents = @incidents.left_joins(:official_record)
+        .reorder("official_records.name ASC, incidents.created_at DESC")
     when "title"
       @incidents = @incidents.reorder(title: :asc, created_at: :desc)
     else

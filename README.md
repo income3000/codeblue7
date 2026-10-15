@@ -28,6 +28,7 @@ Thereafter, admins can change other accounts' roles in the admin area. An admini
 ## Community features
 
 - Signed-in members can publish reports with a title, description, location, occurrence time, and one optional image (image content type, max 10 MB).
+- Incident reports can optionally be linked to an official directory entry; the incident board can be filtered by official and sorted by official name, report title, or recency.
 - Authors and admins can edit or remove reports; other signed-in members can read and comment.
 - Member profiles include display names and bios. Members can edit their own profiles; admins can edit other profiles.
 - Private chats are one-to-one, and only the two participants can read or send messages.

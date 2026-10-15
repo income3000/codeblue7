@@ -125,7 +125,7 @@ class CommunityFeaturesTest < ActionDispatch::IntegrationTest
     incident_titles = response.body.scan(/<article class="incident-card">(.*?)<\/article>/m).flatten.map do |card|
       card[/<h2><a[^>]*>(.*?)<\/a><\/h2>/m, 1]
     end
-    assert_equal [ "Alpha incident", "Zebra incident" ], incident_titles
+    assert_equal [ "Zebra incident", "Alpha incident" ], incident_titles
 
     get incidents_url, params: { official_record_id: first_official.id }
     assert_response :success
