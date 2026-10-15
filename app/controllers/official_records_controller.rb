@@ -54,6 +54,7 @@ class OfficialRecordsController < ApplicationController
   end
 
   def show
+    @incidents = @official_record.incidents.includes(:user).order(occurred_at: :desc, created_at: :desc)
     @reviews = @official_record.reviews.includes(:user).order(created_at: :desc)
     @review = current_user.official_record_reviews.find_or_initialize_by(official_record: @official_record)
     @average_professionalism_rating = @official_record.reviews.average(:professionalism_rating)&.round(1)

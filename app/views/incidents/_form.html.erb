@@ -6,6 +6,7 @@
     <div class="field"><%= form.label :location %><%= form.text_field :location, placeholder: "Area or cross streets" %></div>
     <div class="field"><%= form.label :occurred_at, "When did it happen?" %><%= form.datetime_local_field :occurred_at %></div>
   </div>
+  <div class="field"><%= form.label :official_record_id, "Related official (optional)" %><%= form.collection_select :official_record_id, OfficialRecord.order(:name), :id, :name, { include_blank: "No official selected" } %></div>
   <div class="field"><%= form.label :picture, "Photo (optional, image under 10 MB)" %><%= form.file_field :picture, accept: "image/*" %></div>
   <div class="form-actions"><%= form.submit class: "button" %><%= link_to "Cancel", incidents_path, class: "text-link" %></div>
 <% end %>

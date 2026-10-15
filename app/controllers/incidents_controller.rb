@@ -4,7 +4,19 @@ class IncidentsController < ApplicationController
   before_action :authorize_incident!, only: %i[ edit update destroy ]
 
   def index
-    @incidents = Incident.includes(:user, :comments).order(created_at: :desc)
+    @officials = OfficialRecord.order(:name)
+    @incidents = Incident.includes(:user, :comments, :official_record)
+    @incidents = @incidents.where(official_record_id: params[:official_record_id]) if params[:official_record_id].present?
+
+    sort_order = params.fetch(:sort, "recent").to_s
+    case sort_order
+    when "official"
+      @incidents = @incidents.left_joins(:official_record).reorder("official_records.name ASC, incidents.created_at DESC")
+    when "title"
+      @incidents = @incidents.reorder(title: :asc, created_at: :desc)
+    else
+      @incidents = @incidents.reorder(created_at: :desc)
+    end
   end
 
   def show
@@ -54,6 +66,6 @@ class IncidentsController < ApplicationController
   end
 
   def incident_params
-    params.require(:incident).permit(:title, :description, :location, :occurred_at, :picture)
+    params.require(:incident).permit(:title, :description, :location, :occurred_at, :picture, :official_record_id)
   end
 end

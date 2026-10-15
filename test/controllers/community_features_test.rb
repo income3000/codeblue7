@@ -109,4 +109,27 @@ class CommunityFeaturesTest < ActionDispatch::IntegrationTest
     assert_select "body.app-page"
     assert_select "input[type=search]"
   end
+
+  test "members can associate incidents with officials and filter and sort incidents by official" do
+    first_official = OfficialRecord.create!(user: @member, category: :police_officer, name: "Officer Alpha", city: "New York City", state: "New York")
+    second_official = OfficialRecord.create!(user: @member, category: :judge, name: "Judge Beta", city: "New York City", state: "New York")
+
+    post incidents_url, params: { incident: { title: "Zebra incident", description: "A report linked to the second official.", official_record_id: second_official.id } }
+    post incidents_url, params: { incident: { title: "Alpha incident", description: "A report linked to the first official.", official_record_id: first_official.id } }
+
+    assert_equal first_official, Incident.find_by!(title: "Alpha incident").official_record
+
+    get incidents_url, params: { sort: "official" }
+    assert_response :success
+    assert_equal "official", request.query_parameters["sort"]
+    incident_titles = response.body.scan(/<article class="incident-card">(.*?)<\/article>/m).flatten.map do |card|
+      card[/<h2><a[^>]*>(.*?)<\/a><\/h2>/m, 1]
+    end
+    assert_equal [ "Alpha incident", "Zebra incident" ], incident_titles
+
+    get incidents_url, params: { official_record_id: first_official.id }
+    assert_response :success
+    assert_select "a", text: "Alpha incident"
+    assert_select "a", text: "Zebra incident", count: 0
+  end
 end

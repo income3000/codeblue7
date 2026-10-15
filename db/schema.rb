@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_15_180000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -67,6 +67,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_170000) do
     t.datetime "occurred_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "official_record_id"
+    t.index ["official_record_id"], name: "index_incidents_on_official_record_id"
     t.index ["user_id"], name: "index_incidents_on_user_id"
   end
 
@@ -147,6 +149,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_170000) do
   add_foreign_key "comments", "users"
   add_foreign_key "conversations", "users", column: "user_one_id"
   add_foreign_key "conversations", "users", column: "user_two_id"
+  add_foreign_key "incidents", "official_records"
   add_foreign_key "incidents", "users"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"

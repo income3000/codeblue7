@@ -2,6 +2,7 @@
   <p class="eyebrow"><%= @incident.location.presence || "Community report" %><% if @incident.occurred_at %> · Happened <%= l(@incident.occurred_at, format: :long) %><% end %></p>
   <h1><%= @incident.title %></h1>
   <p class="report-byline">Posted by <%= link_to @incident.user.display_name, user_path(@incident.user) %> · <%= l(@incident.created_at, format: :long) %></p>
+  <% if @incident.official_record %><p class="report-byline">Related official: <%= link_to @incident.official_record.name, official_record_path(@incident.official_record) %></p><% end %>
   <% if @incident.picture.attached? %><%= image_tag @incident.picture, class: "report-picture", alt: "Photo for #{@incident.title}" %><% end %>
   <div class="report-description"><%= simple_format(@incident.description) %></div>
   <% if @incident.user == current_user || current_user.admin? %>

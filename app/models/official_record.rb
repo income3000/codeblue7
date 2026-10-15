@@ -3,6 +3,7 @@ require "uri"
 class OfficialRecord < ApplicationRecord
   belongs_to :user
   has_many :reviews, class_name: "OfficialRecordReview", dependent: :destroy
+  has_many :incidents, dependent: :nullify
 
   enum :category, {
     police_officer: "police_officer",

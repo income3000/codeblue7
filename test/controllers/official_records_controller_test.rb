@@ -109,6 +109,18 @@ class OfficialRecordsControllerTest < ActionDispatch::IntegrationTest
     assert_select "option[value=experience_rating]", text: "Overall experience rating"
   end
 
+  test "official profile shows linked incidents and links to filtered incident board" do
+    sign_in @member
+    official = create_record("Official With Incident")
+    incident = Incident.create!(user: @member, official_record: official, title: "Linked street report", description: "A related report.")
+
+    get official_record_url(official)
+
+    assert_response :success
+    assert_select "a[href=?]", incident_path(incident), text: "Linked street report"
+    assert_select "a[href=?]", incidents_path(official_record_id: official.id), text: "Browse these incidents"
+  end
+
   private
 
   def create_record(name, user: @member)

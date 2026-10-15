@@ -13,6 +13,12 @@
   <% if @official_record.source_url.present? %><p class="source-link"><strong>Source URL (copy and verify):</strong> <%= @official_record.source_url %></p><% end %>
   <p class="directory-notice"><strong>Community submitted.</strong> Verify all details with linked primary sources or official records. An entry is not a finding of wrongdoing.</p>
   <p class="report-byline">Added by <%= link_to @official_record.user.display_name, user_path(@official_record.user) %></p>
+  <section class="official-section" id="incidents">
+    <div class="section-heading"><div><p class="eyebrow">Community incident board</p><h2>Linked incidents (<%= @incidents.size %>)</h2></div><%= link_to "Browse these incidents", incidents_path(official_record_id: @official_record.id), class: "text-link" %></div>
+    <% if @incidents.any? %>
+      <ul class="report-list"><% @incidents.each do |incident| %><li><%= link_to incident.title, incident_path(incident) %><span><%= incident.occurred_at ? l(incident.occurred_at.to_date, format: :long) : l(incident.created_at.to_date, format: :long) %></span></li><% end %></ul>
+    <% else %><p class="muted">No incidents are linked to this official.</p><% end %>
+  </section>
   <section class="official-section" id="ratings">
     <p class="eyebrow">Community ratings</p><h2>Ratings (1–10)</h2>
     <dl class="official-facts"><dt>Professionalism</dt><dd><%= @average_professionalism_rating ? "#{format("%.1f", @average_professionalism_rating)} / 10" : "Not rated yet" %></dd><dt>Overall experience</dt><dd><%= @average_experience_rating ? "#{format("%.1f", @average_experience_rating)} / 10" : "Not rated yet" %></dd><dt>Number of ratings</dt><dd><%= @reviews.size %></dd></dl>

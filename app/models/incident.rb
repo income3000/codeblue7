@@ -1,5 +1,6 @@
 class Incident < ApplicationRecord
   belongs_to :user
+  belongs_to :official_record, optional: true
   has_many :comments, dependent: :destroy
   has_one_attached :picture
 
